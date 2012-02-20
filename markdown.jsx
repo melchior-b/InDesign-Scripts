@@ -75,29 +75,14 @@ function styleOptionDialog() {
         
         with(borderPanels.add()) {
           with(dialogColumns.add()) {
-            staticTexts.add({ staticLabel: 'Heading 1 (H1)' });
-
-            selected.h1 = dropdowns.add({ 
-              stringList: paragraphStyleNames,
-              selectedIndex: fuzzyIndex(paragraphStyleNames, '(H1)'),
-              minWidth: minWidth
-            });
-
-            staticTexts.add({ staticLabel: 'Heading 2 (H2)' });
-
-            selected.h2 = dropdowns.add({
-              stringList: paragraphStyleNames,
-              selectedIndex: fuzzyIndex(paragraphStyleNames, '(H2)'),
-              minWidth: minWidth
-            });
-
-            staticTexts.add({ staticLabel: 'Heading 3 (H3)' });
-
-            selected.h3 = dropdowns.add({
-              stringList: paragraphStyleNames,
-              selectedIndex: fuzzyIndex(paragraphStyleNames, '(H3)'),
-              minWidth: minWidth
-            });
+             for(var i = 1; i <= 5; i++) {
+               staticTexts.add({ staticLabel: 'Heading '+i+' (H'+i+')' });
+               selected['h'+i] = dropdowns.add({ 
+                 stringList: paragraphStyleNames,
+                 selectedIndex: fuzzyIndex(paragraphStyleNames, '(H'+i+')'),
+                 minWidth: minWidth
+               });
+            }
           }
         }
       }
@@ -161,9 +146,9 @@ function styleOptionDialog() {
   }
   
   if(dialog.show()) {
-    styles.h1     = paragraphStyles[selected.h1.selectedIndex];
-    styles.h2     = paragraphStyles[selected.h2.selectedIndex];
-    styles.h3     = paragraphStyles[selected.h3.selectedIndex];
+    for(var i = 1; i <= 5; i++) {
+       styles['h'+i] = paragraphStyles[selected['h'+i].selectedIndex];
+    }
     
     styles.ol     = paragraphStyles[selected.ol.selectedIndex];
     styles.ul     = paragraphStyles[selected.ul.selectedIndex];
@@ -193,18 +178,6 @@ function styleOptionDialog() {
 
 function markdown(target, styles) {
   var replacements = [{
-    name:     'Heading 3',
-    find:     { findWhat: '^###\\s+(.+)\\s+$' },
-    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h3 }
-  }, {
-    name:     'Heading 2',
-    find:     { findWhat: '^##\\s+(.+)\\s+$' },
-    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h2 }
-  }, {
-    name:     'Heading 1',
-    find:     { findWhat: '^#\\s+(.+)\\s+$' },
-    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h1 }
-  }, {
     name:     'Ordered List',
     find:     { findWhat: '^\\d+\\.\\s+(.+)$' },
     change:   { changeTo: "$1", appliedParagraphStyle: styles.ol }
@@ -217,6 +190,10 @@ function markdown(target, styles) {
     find:     { findWhat: '__([^_]+)__' },
     change:   { changeTo: '$1', appliedCharacterStyle: styles.strong }
   }, {
+    name:     'Strong',
+    find:     { findWhat: '\\*([^\\*]+)\\*' },
+    change:   { changeTo: '$1', appliedCharacterStyle: styles.strong }
+  }, {
     name:     'Emphasized',
     find:     { findWhat: '_([^_]+)_' },
     change:   { changeTo: '$1', appliedCharacterStyle: styles.em }
@@ -224,6 +201,34 @@ function markdown(target, styles) {
     name:     'Code',
     find:     { findWhat: '`([^_]+)`' },
     change:   { changeTo: '$1', appliedCharacterStyle: styles.code }
+  }, {
+    name:     'Heading 5',
+    find:     { findWhat: '^#####\\s+(.+?)[\\s#]*$' },
+    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h5 }
+  }, {
+    name:     'Heading 4',
+    find:     { findWhat: '^####\\s+(.+?)[\\s#]*$' },
+    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h4 }
+  }, {
+    name:     'Heading 3',
+    find:     { findWhat: '^###\\s+(.+?)[\\s#]*$' },
+    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h3 }
+  }, {
+    name:     'Heading 2',
+    find:     { findWhat: '^##\\s+(.+?)[\\s#]*$' },
+    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h2 }
+  }, {
+    name:     'Heading 1',
+    find:     { findWhat: '^#\\s+(.+?)[\\s#]*$' },
+    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h1 }
+  }, {
+    name:     'Heading 1 (underlined)',
+    find:     { findWhat: '^(.+?)~b[=\\s]+$' },
+    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h1 }
+  }, {
+    name:     'Heading 2 (underlined)',
+    find:     { findWhat: '^(.+?)~b[-\\s]+$' },
+    change:   { changeTo: "$1\r", appliedParagraphStyle: styles.h2 }
   }, {
     name:     'Line Breaks',
     find:     { findWhat: '~b~b+' },
