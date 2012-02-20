@@ -190,9 +190,9 @@ function markdown(target, styles) {
     find:     { findWhat: '__([^_]+)__' },
     change:   { changeTo: '$1', appliedCharacterStyle: styles.strong }
   }, {
-    name:     'Strong',
+    name:     'Emphasized',
     find:     { findWhat: '\\*([^\\*]+)\\*' },
-    change:   { changeTo: '$1', appliedCharacterStyle: styles.strong }
+    change:   { changeTo: '$1', appliedCharacterStyle: styles.em }
   }, {
     name:     'Emphasized',
     find:     { findWhat: '_([^_]+)_' },
